@@ -17,6 +17,7 @@ class Prompt(BaseModel):
     role: str
     content: str
 
+
 # Contexto del asistente
 context = {
         "role": "system",

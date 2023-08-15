@@ -22,20 +22,16 @@ context = {
 messages = [context]
 
 
-#DRIVER:str = os.getenv("DRIVER")
-server = '(localdb)\ServidorDemos'
-database = 'DB_LLMs_TEST'
-username = ''
-password = ''
-# driver= '{ODBC Driver 17 for SQL Server}'
+
 
 # Configuración de la base de datos
-#server = config.SERVER
-#database = config.DATABASE
+server = f'(localdb)\{config.SERVER}'
+database = config.DATABASE
 #username = config.USERNAME
 #password = config.PASSWORD
-driver= '{ODBC Driver 17 for SQL Server}'
-
+username = ''
+password = ''
+driver= config.DRIVER
 
 connection = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 cursor = connection.cursor()
@@ -59,8 +55,8 @@ async def get_messages():
 #     return response_content
 
 
-@router.get("/prompt_to_Db", tags = 'QueryBS:')
-async def products(prompt_input : str):
+@router.get("/prompt_to_Db")
+async def QueryBS(prompt_input : str):
     content = prompt_input
     if content.startswith("QueryBS: "):
         print("Mode QUERY")
@@ -102,7 +98,7 @@ def fetch_from_db(sql_query: str) -> str:
         return results
     else:
         #cursor.execute(sql_query)
-        return 'SELECT * FROM BOOKSTORE'
+        return ['SELECT * FROM BOOKSTORE']
 
     
 
@@ -119,7 +115,7 @@ def get_table_schema_and_columns(table_name: str) -> dict:
 
 
 def get_sql_from_prompt(prompt: str, table_name: str, table_details: list) -> str:
-    """Usa GPT-3 para obtener una consulta SQL a partir de un prompt."""
+    """GPT-3 para obtener una consulta SQL a partir de un prompt."""
 
     # Dado que table_details es ahora una lista, puedes crear directamente columns_detail
     columns_detail = ', '.join([f"{col['name']} ({col['type']})" for col in table_details])
